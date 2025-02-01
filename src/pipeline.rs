@@ -121,7 +121,15 @@ impl<T> AsyncPipelineBuilder<T> {
 }
 
 
+/// Same as Pipeline but async
+#[cfg(feature = "async")]
+pub struct AsyncPipeline<T> {
+    source: Box<dyn crate::source::AsyncSource<T>>,
+    sinks: Vec<Box<dyn crate::sink::AsyncSink<T>>>,
+    filters: Vec<Box<dyn crate::filter::AsyncFilter<T>>>,
+}
 /// Async flavour of Pipeline
+#[cfg(feature = "async")]
 impl<T> AsyncPipeline<T> {
     pub async fn run(mut self) -> Result<(), Box<dyn std::error::Error>> {
         'outer: while let Some(item) = self.source.next().await {
@@ -140,13 +148,7 @@ impl<T> AsyncPipeline<T> {
     }
 }
 
-/// Same as Pipeline but async
-#[cfg(feature = "async")]
-pub struct AsyncPipeline<T> {
-    source: Box<dyn crate::source::AsyncSource<T>>,
-    sinks: Vec<Box<dyn crate::sink::AsyncSink<T>>>,
-    filters: Vec<Box<dyn crate::filter::AsyncFilter<T>>>,
-}
+
 
 #[cfg(test)]
 mod tests {
