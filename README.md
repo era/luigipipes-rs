@@ -46,13 +46,12 @@ struct MySource;
 impl MySource {
     fn new() -> Self { Self }
 }
-impl Iterator for MySource {
-    type Item = String;
+
+impl Source<String> for MySource {
     fn next(&mut self) -> Option<Self::Item> {
         Some("Hello, Pipeline!".to_string())
     }
 }
-impl Source<String> for MySource {}
 ```
 
 #### **Custom Filter**
