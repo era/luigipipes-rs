@@ -8,7 +8,6 @@
 
 - Provides **filters** to selectively process items.
 - Allows multiple **sinks** for storing or using the processed items.
-- Implements a **builder pattern** for easy construction.
 
 ## Usage
 
