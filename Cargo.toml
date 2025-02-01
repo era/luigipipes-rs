@@ -4,4 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+async-trait = { version = "0.1.86", optional = true }
 thiserror = "2.0.11"
+
+
+[features]
+async = ["dep:async-trait"]

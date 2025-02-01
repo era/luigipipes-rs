@@ -74,6 +74,80 @@ impl<T> Pipeline<T> {
     }
 }
 
+#[cfg(feature = "async")]
+pub struct AsyncPipelineBuilder<T> {
+    source: Option<Box<dyn crate::source::AsyncSource<T>>>,
+    sinks: Vec<Box<dyn crate::sink::AsyncSink<T>>>,
+    filters: Vec<Box<dyn crate::filter::AsyncFilter<T>>>,
+}
+
+#[cfg(feature = "async")]
+impl<T> AsyncPipelineBuilder<T> {
+    pub fn new() -> Self {
+        Self {
+            source: None,
+            sinks: Vec::new(),
+            filters: Vec::new(),
+        }
+    }
+
+    pub fn add_source(mut self, source: Box<dyn crate::source::AsyncSource<T>>) -> Self {
+        self.source = Some(source);
+        self
+    }
+
+    pub fn add_sink(mut self, sink: Box<dyn crate::sink::AsyncSink<T>>) -> Self {
+        self.sinks.push(sink);
+        self
+    }
+
+    pub fn add_filter(mut self, filter: Box<dyn crate::filter::AsyncFilter<T>>) -> Self {
+        self.filters.push(filter);
+        self
+    }
+
+    pub fn build(self) -> Result<AsyncPipeline<T>, BuilderError> {
+        let source = match self.source {
+            Some(source) => source,
+            None => return Err(BuilderError::NoSource),
+        };
+
+        Ok(AsyncPipeline {
+            source: source,
+            sinks: self.sinks,
+            filters: self.filters,
+        })
+    }
+}
+
+
+/// Async flavour of Pipeline
+impl<T> AsyncPipeline<T> {
+    pub async fn run(mut self) -> Result<(), Box<dyn std::error::Error>> {
+        'outer: while let Some(item) = self.source.next().await {
+            for filter in &self.filters {
+                if !filter.filter(&item).await {
+                    continue 'outer;
+                }
+            }
+
+            for sink in &self.sinks {
+                sink.save(&item).await?;
+            }
+        }
+
+        Ok(())
+    }
+}
+
+/// Same as Pipeline but async
+#[cfg(feature = "async")]
+pub struct AsyncPipeline<T> {
+    source: Box<dyn crate::source::AsyncSource<T>>,
+    sinks: Vec<Box<dyn crate::sink::AsyncSink<T>>>,
+    filters: Vec<Box<dyn crate::filter::AsyncFilter<T>>>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

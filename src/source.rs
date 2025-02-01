@@ -18,3 +18,10 @@ impl<T> Source<T> for Vec<T> {
         self.pop()
     }
 }
+
+/// Async flavour of Source
+#[cfg(feature = "async")]
+#[async_trait::async_trait]
+pub trait AsyncSource<T> {
+    async fn next(&mut self) -> Option<T>;
+}
