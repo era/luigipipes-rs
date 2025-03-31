@@ -2,6 +2,9 @@
 name = "luigepipes-rs"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "A simple library to write ETL"
+repository = "https://github.com/era/luigipipes-rs"
 
 [dependencies]
 async-trait = { version = "0.1.86", optional = true }
