@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "luigepipes-rs"
+name = "luigipipes-rs"
 version = "0.1.0"
 dependencies = [
  "async-trait",

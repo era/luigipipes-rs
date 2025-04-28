@@ -29,7 +29,7 @@ impl<T> PipelineBuilder<T> {
         }
     }
 
-    pub fn add_source(mut self, source: Box<dyn crate::source::Source<T>>) -> Self {
+    pub fn source(mut self, source: Box<dyn crate::source::Source<T>>) -> Self {
         self.source = Some(source);
         self
     }
@@ -120,7 +120,6 @@ impl<T> AsyncPipelineBuilder<T> {
     }
 }
 
-
 /// Same as Pipeline but async
 #[cfg(feature = "async")]
 pub struct AsyncPipeline<T> {
@@ -147,8 +146,6 @@ impl<T> AsyncPipeline<T> {
         Ok(())
     }
 }
-
-
 
 #[cfg(test)]
 mod tests {
